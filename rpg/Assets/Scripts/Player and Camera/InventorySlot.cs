@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+
+
 {
     private Inventory inventory;   
     public int slotIndex; 
@@ -12,12 +14,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     private void Start()
     {
         inventory = Inventory.Instance; 
-        descriptionPanel.GetComponent<Image>().raycastTarget = false;
-        descriptionText.raycastTarget = false;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log($"Clicked on slot {slotIndex}");
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             UseItem();

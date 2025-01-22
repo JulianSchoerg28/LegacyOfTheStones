@@ -7,9 +7,6 @@ using UnityEngine.UI;
 using Object = System.Object;
 
 
-//Eher PlayerManager lol
-//TODO: eigener gamemanager?
-//TODO: und/oder Ui elemente auslagern? 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -17,12 +14,16 @@ public class GameManager : MonoBehaviour
     private PlayerMovement playerMovement;
     public int hearts = 100;
     public Text heartsText;
-    public Slider healthSlider; 
     
     public Armor equippedArmor;
     public Image ArmorUImage;
     
-    
+    private Sword equippedSword { get; set; }
+    public Image SwordUImage;
+
+    public bool isBossKilled = false;
+
+    private float normalPlayerAttackDamage;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,9 +38,11 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        // SceneLoader.Instance.LoadScene("testscene");
         updateArmorUI();
+        updateSwordUI();
         playerMovement = FindObjectOfType<PlayerMovement>();
+        normalPlayerAttackDamage = playerMovement.playerAttackDamage;
+        Debug.Log("normal player attack: " + normalPlayerAttackDamage);
     }
 
     public bool PlayerCanMove
@@ -77,7 +80,6 @@ public class GameManager : MonoBehaviour
     private void updateHearts()
     {
         heartsText.text = hearts.ToString();
-        healthSlider.value = hearts;
     }
     public void TakeDamage(int damage)
     {
@@ -158,7 +160,6 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    
     public void ClearAllDontDestroyOnLoad()
     {
         GameObject[] dontDestroyOnLoadObjects = FindObjectsOfType<GameObject>();
@@ -181,6 +182,62 @@ public class GameManager : MonoBehaviour
             Destroy(obj);
         }
     }
+    
+    public void EquipSword(Sword sword)
+    {
+        if (equippedSword != null)
+        {
+            Inventory.Instance.AddToInventory(equippedSword);
+        }
+
+        equippedSword = sword;
+        
+        if (equippedSword != null)
+        {
+            playerMovement.playerAttackDamage = sword.damage;
+        }
+        else
+        {
+            playerMovement.playerAttackDamage = normalPlayerAttackDamage;
+        }
+        
+        Debug.Log(playerMovement.playerAttackDamage);
+                
+        updateSwordUI();
+    }
+
+    public void updateSwordUI()
+    {
+        if (SwordUImage)
+        {
+            if (equippedSword != null)
+            {
+                if (equippedSword.ItemSprite != null)
+                {
+                    SwordUImage.sprite = equippedSword.ItemSprite;
+                    SwordUImage.enabled = true;
+                }
+                else
+                {
+                    Debug.Log("Das Schwert hat kein Sprite.");
+                }
+            }
+            else
+            {
+                SwordUImage.sprite = null;
+                SwordUImage.enabled = false;
+            }
+        }
+        else
+        {
+            SwordUImage.sprite = null;
+            Debug.Log("Kein Schwert UI gefunden.");
+        }
+    }
+
+
+    
+    
 
 
 }

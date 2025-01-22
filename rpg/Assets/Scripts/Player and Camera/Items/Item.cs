@@ -7,12 +7,12 @@ public abstract class Item
 {
     private string itemName;
     private string description;
-    //ID 1-5 for Potions, 6-10 for weapons, 10-* for anything else...or whatever 
     private int itemID; 
     private Sprite itemSprite;
     private bool isStackable;
     private int invSlot;
     private bool destroyAfterUse;
+
 
 
     protected Item(string itemName, string description, int itemID, Sprite itemSprite, bool isStackable, bool destroyAfterUse)

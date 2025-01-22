@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -22,7 +23,7 @@ public class Inventory : MonoBehaviour
     
     //logic
     private static int inventorySize = 8;
-    private static int maxStackSize = 2;
+    private static int maxStackSize = 6;
     private Item[] inventory = new Item[inventorySize];
     private int[] itemAmount = new int[inventorySize];
     
@@ -37,11 +38,11 @@ public class Inventory : MonoBehaviour
         else
         {
             Instance = this; 
-            DontDestroyOnLoad(gameObject); //so inventory stays if you change scene 
+            DontDestroyOnLoad(gameObject); 
         }
     }
-
     
+
     void Start()
     {
         InitializeUI();
@@ -69,7 +70,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    void InitializeUI()
+    public void InitializeUI()
     {
         foreach (Transform child in inventoryPanel)
         {
@@ -78,10 +79,13 @@ public class Inventory : MonoBehaviour
 
         slotImages = new Image[inventorySize];
 
+        Debug.Log($"Vor Slot-Erstellung: inventoryPanel hat {inventoryPanel.childCount} Kinder.");
         for (int i = 0; i < inventorySize; i++)
         {
             GameObject newSlot = Instantiate(slotPrefab, inventoryPanel);
-
+            
+            Debug.Log($"Slot {i} erstellt.");
+            
             InventorySlot slotScript = newSlot.AddComponent<InventorySlot>();
             slotScript.slotIndex = i; 
             slotScript.descriptionPanel = descriptionPanel;
@@ -89,14 +93,22 @@ public class Inventory : MonoBehaviour
             slotImages[i] = newSlot.transform.Find("ItemImage").GetComponent<Image>();
         }
 
-        Debug.Log($"{inventorySize} Slots erstellt.");
+        Debug.Log($"Nach Slot-Erstellung: inventoryPanel hat {inventoryPanel.childCount} Kinder.");
+        
     }
 
     
     void UpdateUI()
-    {
+    {   
+        
         for (int i = 0; i < inventorySize; i++)
         {
+            // if (i >= inventoryPanel.childCount)
+            // {
+            //     Debug.LogError($"Slot {i} existiert nicht im inventoryPanel.");
+            //     return;
+            // }
+            
             Transform currentSlot = inventoryPanel.GetChild(i);
             Image img = currentSlot.Find("ItemImage")?.GetComponent<Image>();
             Text stackText = currentSlot.Find("StackAmount")?.GetComponent<Text>();
@@ -130,6 +142,8 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+        Debug.Log($"inventoryPanel hat {inventoryPanel.childCount} Kinder.");
+
     }
 
     
@@ -159,8 +173,6 @@ public class Inventory : MonoBehaviour
     { 
         for (int i = 0; i < inventory.Length; i++)
         {
-            if (inventory[i] != null)
-            {
                 if (inventory[i] != null && item.IsStackable && inventory[i].IsSameItem(item) && itemAmount[i] < maxStackSize)
                 {
                     Debug.Log($"Added {item.ItemName} to inventory at slot {i}.");
@@ -169,7 +181,6 @@ public class Inventory : MonoBehaviour
                     UpdateUI();
                     return;
                 } 
-            }    
         }
         
         //add item in a new slot
@@ -181,7 +192,7 @@ public class Inventory : MonoBehaviour
                 itemAmount[i] += 1;
                 item.InvSlot = i;
                 UpdateUI();
-                // Debug.Log("Added to Inventory: " + item.ItemName);
+                Debug.Log($"Added {item.ItemName} to inventory at slot {i}.");
                 return; 
             }
         }
@@ -281,6 +292,14 @@ public class Inventory : MonoBehaviour
                 amount--;
             }
         }
+    }
+    
+    public bool HasAllRequiredStones(int fireID, int earthID, int waterID, int airID)
+    {
+        return HowManyItemsOfThisTypeTF(fireID) > 0 &&
+               HowManyItemsOfThisTypeTF(earthID) > 0 &&
+               HowManyItemsOfThisTypeTF(waterID) > 0 &&
+               HowManyItemsOfThisTypeTF(airID) > 0;
     }
     
     

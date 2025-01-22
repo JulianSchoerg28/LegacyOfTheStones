@@ -9,7 +9,7 @@ public class QuickSlotsManager : MonoBehaviour
     public Transform quickslotsParent;
     private QuickSlot[] quickSlots;
     
-    private int maxStackSize = 2;
+    private int maxStackSize = 6;
 
     private void Awake()
     {

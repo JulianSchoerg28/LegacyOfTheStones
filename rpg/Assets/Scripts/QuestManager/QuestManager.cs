@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,32 +23,55 @@ public class QuestManager : MonoBehaviour
     private bool activeMainQuest;
     private bool activeSideQuest;
 
+    public bool ActiveMainQuest => activeMainQuest;
+
+    public bool ActiveSideQuest => activeSideQuest;
+
     public static QuestManager Instance { get; private set; }
 
+    public GameObject rewardPrefab;
+    
+    private bool initialized = false;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            ResetAllQuestProgress();
+            DontDestroyOnLoad(gameObject); 
+            // ResetAllQuestProgress();
+            
+            if (!initialized)
+            {
+                ResetAllQuestProgress();
+                initialized = true;
+            }
             UpdateQuestUI();
+            Debug.Log("yeah");
         }
         else
         {
+            Debug.Log("Duplicate Instance");
             Destroy(gameObject);
         }
     }
-    
+
+    // private void Update()
+    // {
+    //     UpdateQuestUI();
+    // }
+
     public void ResetAllQuestProgress()
     {
         foreach (Quest quest in mainQuests)
         {
             quest.currentProgress = 0;
+            quest.isCompleted = false;
         }
 
         foreach (Quest quest in sideQuests)
         {
             quest.currentProgress = 0;
+            quest.isCompleted = false;
         }
     }
 
@@ -59,7 +83,7 @@ public class QuestManager : MonoBehaviour
             currentMainQuestID += 1;
             activeMainQuest = true;
             UpdateQuestUI();
-
+            
             Quest quest = mainQuests[currentMainQuestID];
             Debug.Log($"{quest.questName} (Main Quest) is now active.");
         }
@@ -67,13 +91,20 @@ public class QuestManager : MonoBehaviour
 
     public void UpdateSideQuest(int questID)
     {
+        
         if (!activeSideQuest) 
         {
+            Quest quest = sideQuests[questID];
+            if (quest == null || quest.isCompleted)
+            {
+                return;
+            }
+            
+            
             currentSideQuestID = questID;
             activeSideQuest = true;
             UpdateQuestUI();
 
-            Quest quest = sideQuests[currentSideQuestID];
             Debug.Log($"{quest.questName} (Side Quest) is now active.");
         }
     }
@@ -95,8 +126,35 @@ public class QuestManager : MonoBehaviour
         return null;
     }
     
+    // public void FindAndAssignUIElements()
+    // {
+    //     // Suche die neuen UI-Elemente in der aktuellen Szene
+    //     questTitleText = GameObject.Find("QuestName")?.GetComponent<Text>();
+    //     questDescriptionText = GameObject.Find("QuestDescription")?.GetComponent<Text>();
+    //     questProgressText = GameObject.Find("QuestProgress")?.GetComponent<Text>();
+    //
+    //     SidequestPanel = GameObject.Find("SideQuestBackgroundPanel");
+    //     sidequestTitleText = GameObject.Find("SideQuestName")?.GetComponent<Text>();
+    //     sidequestDescriptionText = GameObject.Find("SideQuestDescription")?.GetComponent<Text>();
+    //     sidequestProgressText = GameObject.Find("SideQuestProgress")?.GetComponent<Text>();
+    //
+    //     Debug.Log($"UI-Referenzen aktualisiert. Main Quest UI: {questTitleText != null}, Side Quest UI: {sidequestTitleText != null}");
+    // }
 
-    private void UpdateQuestUI()
+    public void FindAndAssignUIElements()
+    {
+        // GameObject mainCanvas = GameObject.FindWithTag("MainCanvas");
+        // if (mainCanvas != null)
+        // {
+        //     questTitleText = mainCanvas.transform.Find("QuestTitleText")?.GetComponent<Text>();
+        //     questDescriptionText = mainCanvas.transform.Find("QuestDescriptionText")?.GetComponent<Text>();
+        //     questProgressText = mainCanvas.transform.Find("QuestProgressText")?.GetComponent<Text>();
+        // }
+    }
+    
+
+
+    public void UpdateQuestUI()
     {
         Quest currentMainQuest = null;
         Quest currentSideQuest = null;
@@ -110,22 +168,35 @@ public class QuestManager : MonoBehaviour
         {
             currentSideQuest = GetQuestByID(currentSideQuestID, false);
         }
+        
+        if (currentMainQuest) 
+            Debug.Log(currentMainQuest.questName);
 
         if (currentMainQuest != null)
         {
+            Debug.Log("there is a main quest");
+            Debug.Log(questTitleText.text);
+        
             questTitleText.text = currentMainQuest.questName;
             questDescriptionText.text = currentMainQuest.description;
             questProgressText.text = $"{currentMainQuest.currentProgress}/{currentMainQuest.targetAmount}";
         }
         else
         {
+            Debug.Log("there is no main quest");
+            Debug.Log(questTitleText.text);
             questTitleText.text = "Keine aktive Quest";
             questDescriptionText.text = "";
             questProgressText.text = "";
         }
-
+        
+        if (currentSideQuest) 
+            Debug.Log(currentSideQuest.questName);
+        
         if (currentSideQuest != null)
         {
+            Debug.Log("there is a side quest");
+
             SidequestPanel.SetActive(true);
             sidequestTitleText.text = currentSideQuest.questName;
             sidequestDescriptionText.text = currentSideQuest.description;
@@ -133,6 +204,8 @@ public class QuestManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("there is no side quest");
+
             SidequestPanel.SetActive(false);
         }
     }
@@ -178,12 +251,87 @@ public class QuestManager : MonoBehaviour
 
         return -1;
     }
+    
+    public Quest GetQuestByIDFromMainQuests(int questId)
+    {
+        foreach (Quest quest in mainQuests)
+        {
+            if (quest.questID == questId)
+            {
+                return quest;
+            }
+        }
+        return null;
+    }
+
+    public Quest GetQuestByIDFromSideQuests(int questId)
+    {
+        foreach (Quest quest in sideQuests)
+        {
+            if (quest.questID == questId)
+            {
+                return quest;
+            }
+        }
+        return null;
+    }
+    
+    public bool IsMainQuestActive(int questId)
+    {
+        foreach (Quest quest in mainQuests)
+        {
+            if (quest.questID == questId && !quest.isCompleted)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool IsSideQuestActive(int questId)
+    {
+        foreach (Quest quest in sideQuests)
+        {
+            if (quest.questID == questId && !quest.isCompleted)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    
 
     public void finishedQuest(int questID, bool isMainQuest)
     {
         //TODO: add reward
+        if (isMainQuest)
+        {
+            
+        }
+        else
+        {
+           switch (questID)
+           
+           {
+               case 0:
+                   Vector3 spawnPos = new Vector3(0, 0, 0);
+                   Vector3 offset = new Vector3(-1f, 0f, 0f); 
+    
+                   GameObject npc = GameObject.Find("npc_Anna");
+            
+                   if (npc != null)
+                   {
+                       spawnPos = npc.transform.position + offset;
+                   }
+                   
+                   Debug.Log("Hier");
+                   Instantiate(rewardPrefab, spawnPos, Quaternion.identity);
+                   break;
+           } 
+        }
         
-       
         
         if (isMainQuest)
         {

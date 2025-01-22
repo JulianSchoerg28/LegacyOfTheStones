@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 8283167470329961319}
   - component: {fileID: 3482763415621452953}
   - component: {fileID: 3426175807488869259}
-  - component: {fileID: 2103367959664477744}
   m_Layer: 0
   m_Name: female
   m_TagString: Player
@@ -79,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 55
-  m_Sprite: {fileID: 21300022, guid: b62a8e74a325e4493956501c30341010, type: 3}
+  m_Sprite: {fileID: 21300012, guid: df894d170d5f44be293fae0ef08b055c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -199,18 +198,6 @@ BoxCollider2D:
   m_Size: {x: 0.6969991, y: 0.88889956}
   m_EdgeRadius: 0
 --- !u!114 &3426175807488869259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1474673023467197829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 162c63d817ab24a4993262b3bab2fe71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2103367959664477744
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4908f4d9e9402324192b3e177e871ca6, type: 3}
   m_Name: quest1
   m_EditorClassIdentifier: 
-  npcName: Peter
+  npcName: Zeus
   sentences:
   - Hallo Mensch!
   - 'Du hast es geschafft, wuhu!
 
 '
-  - "Deine n\xE4chste Aufgabe: sammel alle M\xFCnzen"
+  - "Deine n\xE4chste Aufgabe: Besiege den Endboss\t"
+  questId: 1
+  isMainQuest: 1

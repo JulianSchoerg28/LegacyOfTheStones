@@ -97,20 +97,24 @@ public class QuickSlot : MonoBehaviour, IPointerClickHandler{
     {
         if (currentItem != null)
         {
+         
             currentItem.Use();
+
             if (currentItem.DestroyAfterUse)
             {
                 currentStack--;
 
                 if (currentStack <= 0)
                 {
-                    currentItem = null;
-                    currentStack = 0;
+                    currentItem = null; 
+                    currentStack = 0; 
                 }
             }
+            
             UpdateUI();
         }
     }
+
     
     
 }

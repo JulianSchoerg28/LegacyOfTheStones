@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6124987346839917912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2894196471070938387}
+  - component: {fileID: 8004248462678902846}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2894196471070938387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6124987346839917912}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8004248462678902846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6124987346839917912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e08f885ac10214d4db48ee250f4c6dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainQuests:
+  - {fileID: 11400000, guid: 193c5a67ac34cf3409d9ad0f2fa4d539, type: 2}
+  - {fileID: 11400000, guid: d9121b78a9be2be4ea428260a7b21467, type: 2}
+  sideQuests:
+  - {fileID: 11400000, guid: 5eade8e8c17886f4b8f1c805d51c1c85, type: 2}
+  - {fileID: 11400000, guid: 8bf2b958ace876d4385307bebd2e6582, type: 2}
+  currentMainQuestID: -1
+  currentSideQuestID: -1
+  questTitleText: {fileID: 0}
+  questDescriptionText: {fileID: 0}
+  questProgressText: {fileID: 0}
+  SidequestPanel: {fileID: 0}
+  sidequestTitleText: {fileID: 0}
+  sidequestDescriptionText: {fileID: 0}
+  sidequestProgressText: {fileID: 0}
+  rewardPrefab: {fileID: 9140395535802086278, guid: 2b16e4cadd44c3f409d8717fcb0c9037, type: 3}

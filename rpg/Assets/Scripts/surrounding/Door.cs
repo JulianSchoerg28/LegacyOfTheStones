@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class Door : MonoBehaviour
 {
     public bool IsLocked = true;
-    //ignore if you don´t have to switch scene
     public string sceneName;
 
     public bool Unlock()

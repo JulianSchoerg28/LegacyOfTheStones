@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questID: 0
   questName: Sammeln
-  description: Sammle 3 Coins ein!
-  targetAmount: 3
-  currentProgress: 1
-  isCompleted: 1
+  description: Sammle 4 Coins ein!
+  targetAmount: 4
+  currentProgress: 0
+  isCompleted: 0
   isMainQuest: 0

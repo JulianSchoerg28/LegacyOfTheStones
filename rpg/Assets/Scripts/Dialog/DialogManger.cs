@@ -1,22 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogManger : MonoBehaviour
+public class DialogManager : MonoBehaviour
 {
-    public Text dialogText; 
-    public Text npcNameText; 
-    private int currentSentenceIndex;
-    private Dialog currentDialog;
-    public GameObject bubble;
-    private QuestManager questManager;
-    public static DialogManger Instance { get; private set; }
-    
-    private Transform playerTransform; 
-    public float maxDistance = 5f;   
-    private Transform npcTransform;
+    public static DialogManager Instance;
+
+    [SerializeField] private GameObject dialogUI;
+    [SerializeField] private Text dialogText;
+    [SerializeField] private Text dialogNameText;
+
+    private Queue<string> sentences;
+    private bool isDialogActive = false;
     
     private void Awake()
     {
@@ -26,95 +22,66 @@ public class DialogManger : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
         }
     }
 
     private void Start()
     {
-        questManager = QuestManager.Instance;
-        
-        GameObject playerObject = GameObject.FindWithTag("Player");
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
-        else
-        {
-            Debug.LogWarning("No object with tag 'Player' found!");
-        }
-        
+        sentences = new Queue<string>();
     }
-    
-    /*public void StartDialog(Dialog dialog) 
+
+    private void Update()
     {
-        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
-        npcTransform = null;
-        
-        foreach (GameObject obj in allObjects)
+        if (isDialogActive)
         {
-            if (obj.name.Contains(dialog.npcName))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                npcTransform = obj.transform;
-                break;
+                DisplayNextSentence();
             }
         }
-        
-        if (npcTransform == null)
+    }
+
+    public void StartDialog(Dialog dialog)
+    {
+        if (isDialogActive)
         {
-            Debug.LogError($"NPC with name containing '{dialog.npcName}' not found.");
+            CloseDialog();
+        }
+
+        dialogUI.SetActive(true);
+        sentences.Clear();
+        isDialogActive = true;
+
+        if (dialogNameText != null)
+        {
+            dialogNameText.text = dialog.npcName;
+        }
+
+        foreach (string sentence in dialog.sentences)
+        {
+            sentences.Enqueue(sentence);
+        }
+
+        DisplayNextSentence();
+    }
+
+    public void DisplayNextSentence()
+    {
+        if (sentences.Count == 0)
+        {
+            CloseDialog();
             return;
         }
 
-        bubble.SetActive(true);
-        currentDialog = dialog;
-        npcNameText.text = dialog.npcName;
-        currentSentenceIndex = 0;
-        
-        if (questManager.IsCurrentQuestCompleted())
-        {
-            dialogText.text = "";
-        } 
-        else
-        {
-            ShowNextSentence();
-        }
+        string sentence = sentences.Dequeue();
+        dialogText.text = sentence;
     }
 
-    public void ShowNextSentence() {
-        if (currentSentenceIndex < currentDialog.sentences.Length) {
-            dialogText.text = currentDialog.sentences[currentSentenceIndex];
-            currentSentenceIndex++;
-        } else {
-            EndDialog();
-        }
-    }
-
-    void EndDialog() {
-        dialogText.text = "";
-        npcNameText.text = "";
-        bubble.SetActive(false);
-        
-    }
-    
-    void Update()
+    public void CloseDialog()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && dialogText.IsActive()) 
-        {
-            if (questManager.IsCurrentQuestCompleted())
-            {
-                EndDialog();
-            } 
-            else
-            {
-                ShowNextSentence();
-            }
-        }
-    
-        if (bubble.activeSelf && Vector3.Distance(playerTransform.position, npcTransform.position) > maxDistance)
-        {
-            EndDialog();
-        }
-    }*/
-
+        Debug.Log("Dialog wird geschlossen.");
+        dialogUI.SetActive(false);
+        isDialogActive = false;
+    }
 }

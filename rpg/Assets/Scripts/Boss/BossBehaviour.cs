@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class BossEnemy : MonoBehaviour
@@ -7,12 +8,15 @@ public class BossEnemy : MonoBehaviour
     public float followSpeed = 2f; // Geschwindigkeit des Bosses
     public float attackRange = 3f; // Reichweite für den Angriff
     public float specialAttackRange = 5f; // Reichweite für Spezialangriffe
-    public float health = 300f; // Lebenspunkte des Bosses
+    public float maxHealth = 300f; // Maximale Lebenspunkte des Bosses
     public float attackDamage = 20f; // Schaden des normalen Angriffs
     public float specialAttackDamage = 40f; // Schaden des Spezialangriffs
     public float attackCooldown = 2f; // Abklingzeit für normale Angriffe
     public float specialAttackCooldown = 5f; // Abklingzeit für Spezialangriffe
 
+    public Slider healthSlider; // Slider für die Lebensanzeige
+
+    private float health;
     private float nextAttackTime = 0f;
     private float nextSpecialAttackTime = 0f;
 
@@ -20,6 +24,22 @@ public class BossEnemy : MonoBehaviour
 
     void Start()
     {
+        health = maxHealth; // Setze die Gesundheit auf das Maximum
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.minValue = 0f;
+            healthSlider.value = health;
+            
+            Image fillImage = healthSlider.fillRect.GetComponent<Image>();
+            if (fillImage != null)
+            {
+                fillImage.color = Color.green;
+            }
+            
+        }
+
         if (player == null) // Spieler automatisch finden, wenn nicht zugewiesen
         {
             GameObject playerObject = GameObject.FindWithTag("Player");
@@ -39,6 +59,8 @@ public class BossEnemy : MonoBehaviour
 
     void Update()
     {
+        UpdateHealthBarPosition();
+        
         if (player == null) return;
 
         // Berechne die Distanz zum Spieler
@@ -58,6 +80,15 @@ public class BossEnemy : MonoBehaviour
         else if (distanceToPlayer > attackRange)
         {
             FollowPlayer();
+        }
+    }
+    
+    
+    void UpdateHealthBarPosition()
+    {
+        if (healthSlider != null)
+        {
+            healthSlider.transform.position = transform.position + new Vector3(0, 5f, 0); // Slider 2 Einheiten über dem Boss
         }
     }
 
@@ -130,6 +161,12 @@ public class BossEnemy : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
+        
+        if (healthSlider != null)
+        {
+            healthSlider.value = health;
+            UpdateHealthBarColor();
+        }
 
         Debug.Log($"Boss hat {damage} Schaden erhalten. Verbleibende Gesundheit: {health}");
 
@@ -138,6 +175,21 @@ public class BossEnemy : MonoBehaviour
             Die();
         }
     }
+    
+    void UpdateHealthBarColor()
+    {
+        if (healthSlider != null)
+        {
+            Image fillImage = healthSlider.fillRect.GetComponent<Image>();
+            if (fillImage != null)
+            {
+                // Übergang von grün (volle Gesundheit) zu rot (niedrige Gesundheit)
+                float healthPercent = health / maxHealth;
+                fillImage.color = Color.Lerp(Color.red, Color.green, healthPercent);
+            }
+        }
+    }
+
 
     void Die()
     {
@@ -147,9 +199,10 @@ public class BossEnemy : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
-
+        
+        GameManager.Instance.isBossKilled = true;
         // Entferne den Boss aus der Szene nach einer kurzen Verzögerung
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 1f);
     }
 
     private void OnDrawGizmosSelected()

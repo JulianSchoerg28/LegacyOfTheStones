@@ -6,6 +6,10 @@ public class PlayerSpawner : MonoBehaviour
     
     private void Start()
     {
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null) 
+            return;
+        
         string selectedAvatar = PlayerPrefs.GetString("SelectedAvatar", "DefaultAvatar");
         GameObject avatarPrefab = Resources.Load<GameObject>($"Avatars/{selectedAvatar}");
 

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4908f4d9e9402324192b3e177e871ca6, type: 3}
   m_Name: quest0
   m_EditorClassIdentifier: 
-  npcName: Peter
+  npcName: Zeus
   sentences:
   - Hallo Mensch!
-  - 'Deine erste Quest: Finde Anna'
+  - "Deine erste Quest: Finde alle 4 Elementar Steine um das Tor zu \xF6ffnen"
   - "Viel Gl\xFCck!\n"
+  questId: 0
+  isMainQuest: 1

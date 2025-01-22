@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Sammel alle 4 Steine ein
   targetAmount: 4
   currentProgress: 0
-  isCompleted: 1
+  isCompleted: 0
   isMainQuest: 1

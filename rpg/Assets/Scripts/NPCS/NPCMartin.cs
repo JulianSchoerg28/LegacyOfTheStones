@@ -16,6 +16,10 @@ public class NPCMartin : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         { 
+            if (collision.gameObject.CompareTag("Player")) {
+                QuestManager.Instance.UpdateSideQuest(1);
+            }
+            
             isInteracting = true;
             StartCoroutine(WaitAndGiveReward());
         }
@@ -24,7 +28,7 @@ public class NPCMartin : MonoBehaviour
     private IEnumerator WaitAndGiveReward()
     {
         Debug.Log("Interaction started. Waiting 10 seconds...");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(5f);
 
         GiveReward();
 

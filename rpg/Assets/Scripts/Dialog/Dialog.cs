@@ -6,6 +6,9 @@ using UnityEngine;
 public class Dialog : ScriptableObject {
     public string npcName; 
     [TextArea(3, 10)]
-    public string[] sentences; 
+    public string[] sentences;
+
+    public int questId = -1;
+    public bool isMainQuest = false;
 }
 

@@ -1,0 +1,3 @@
+rep "ScaleSaga@ScaleSaga@cloud"
+  path "/"
+    smartbranch "/main"

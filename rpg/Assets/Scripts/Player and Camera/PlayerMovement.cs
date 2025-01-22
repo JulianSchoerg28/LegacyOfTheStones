@@ -15,6 +15,17 @@ public class PlayerMovement : MonoBehaviour {
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
+    private bool isSpeedBoostActive = false;
+    private float boostMultiplier = 1f;
+    
+    
+    public float PlayerAttackDamage
+    {
+        get => playerAttackDamage;
+        set => playerAttackDamage = value;
+    }
+
+
     void Start() {
         //get all components
         rb = GetComponent<Rigidbody2D>();
@@ -67,6 +78,11 @@ public class PlayerMovement : MonoBehaviour {
         {
             AttackEnemy();
         }
+        
+        if (isSpeedBoostActive)
+        {
+            moveSpeed *= boostMultiplier; 
+        }
 
     }
 
@@ -74,53 +90,47 @@ public class PlayerMovement : MonoBehaviour {
         //move rigit body 
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
-
+    
+    public void UpdateAttackDamage(int newDamage)
+    {
+        playerAttackDamage = newDamage;
+        Debug.Log($"PlayerAttackDamage auf {newDamage} aktualisiert.");
+    }
+    
     void AttackEnemy()
     {
-        // Definiere einen LayerMask für Gegner, falls du Layer benutzt (optional)
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, 1.5f); // Nahkampfradius
+        float damageToDeal = playerAttackDamage;
+        
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, 1.5f);
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            Debug.Log($"Getroffenes Objekt: {enemy.name}, Tag: {enemy.tag}");
-
-            // Nur Objekte mit dem Tag 'Enemy' weiter verarbeiten
             if (!enemy.CompareTag("Enemy"))
-            {
-                Debug.LogWarning($"Überspringe Objekt: {enemy.name}, da es nicht den Tag 'Enemy' hat.");
-                continue; // Fahre mit dem nächsten Treffer fort
-            }
+                continue;
 
-            // Prüfe, ob es ein normaler Gegner oder ein Boss ist
             EnemyBehavior enemyBehavior = enemy.GetComponent<EnemyBehavior>();
             BossEnemy bossEnemy = enemy.GetComponent<BossEnemy>();
 
             if (enemyBehavior != null)
             {
-                enemyBehavior.TakeDamage(playerAttackDamage);
-                Debug.Log($"Spieler hat dem Gegner {playerAttackDamage} Schaden zugefügt!");
+                enemyBehavior.TakeDamage(damageToDeal);
+                Debug.Log($"Spieler hat dem Gegner {damageToDeal} Schaden zugefügt!");
             }
             else if (bossEnemy != null)
             {
-                bossEnemy.TakeDamage(playerAttackDamage);
-                Debug.Log($"Spieler hat dem Boss {playerAttackDamage} Schaden zugefügt!");
-            }
-            else
-            {
-                Debug.LogError($"Das Objekt {enemy.name} hat den Tag 'Enemy', aber keine gültige Gegner-Komponente.");
+                bossEnemy.TakeDamage(damageToDeal);
+                Debug.Log($"Spieler hat dem Boss {damageToDeal} Schaden zugefügt!");
             }
         }
     }
-
-
-
-
-
+    
 
     public void ApplySpeedBoost(float multiplier)
     {
-        moveSpeed = normalSpeed * multiplier;
-        Debug.Log("Speed Boost angewendet! Neue Geschwindigkeit: " + moveSpeed);
+        boostMultiplier = multiplier;
+        isSpeedBoostActive = true;
+        Debug.Log("Speed Boost angewendet! Multiplikator: " + multiplier);
     }
 
 
